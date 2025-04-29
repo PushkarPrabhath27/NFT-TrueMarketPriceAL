@@ -49,3 +49,41 @@ export class ExampleOracleService implements OracleServiceAdapter {
   async fetchPrice(symbol: string) { return 0; }
   getOracleName() { return 'ExampleOracle'; }
 }
+
+// --- Concrete Implementations for Upstream Integrations ---
+
+// Blockchain Data Extraction System Adapter
+export class BlockchainDataExtractionProvider implements BlockchainNodeProvider {
+  async connect() { /* Connect to blockchain node logic */ }
+  async disconnect() { /* Disconnect logic */ }
+  async isHealthy() { return true; }
+  getProviderName() { return 'BlockchainDataExtractionSystem'; }
+}
+
+// Marketplace APIs for Listing Data Adapter
+export class MarketplaceListingAPIAdapter implements MarketplaceAPIAdapter {
+  async fetchCollectionData(collectionId: string) { /* Fetch collection data logic */ return {}; }
+  async fetchNFTData(tokenId: string) { /* Fetch NFT data logic */ return {}; }
+  getMarketplaceName() { return 'MarketplaceListingAPI'; }
+}
+
+// Image and Metadata Storage Systems Adapter
+export class ImageMetadataStorageGateway implements StorageGatewayAdapter {
+  async fetch(uri: string) { /* Fetch image/metadata logic */ return Buffer.from(''); }
+  async isAvailable() { return true; }
+  getGatewayName() { return 'ImageMetadataStorage'; }
+}
+
+// External Intelligence Sources Adapter
+export class ExternalIntelligenceSourceAdapter implements OracleServiceAdapter {
+  async fetchPrice(symbol: string) { /* Fetch intelligence data logic */ return 0; }
+  getOracleName() { return 'ExternalIntelligenceSource'; }
+}
+
+// Community Reporting Channels Adapter
+export class CommunityReportingChannelAdapter implements BlockchainNodeProvider {
+  async connect() { /* Connect to community reporting channel */ }
+  async disconnect() { /* Disconnect logic */ }
+  async isHealthy() { return true; }
+  getProviderName() { return 'CommunityReportingChannel'; }
+}
