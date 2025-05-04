@@ -4,6 +4,8 @@
 
 The NFT TrustScore API provides comprehensive data and analysis for NFTs, including trust scores, price intelligence, risk assessments, blockchain data, and fraud detection. This document provides detailed information on how to use the API.
 
+> **New:** For Hathor Network nano contracts integration, see [HATHOR_INTEGRATION.md](./docs/HATHOR_INTEGRATION.md) and [API_DOCUMENTATION_HATHOR.md](./API_DOCUMENTATION_HATHOR.md).
+
 ## Base URL
 
 ```
