@@ -6,8 +6,142 @@
  */
 
 import { TrustScoreEngine } from '../TrustScoreEngine';
-import { HathorNanoContractFactor } from '../factors/HathorNanoContractFactor';
-import { HathorProvider } from '../../blockchain/hathor/connection/HathorProvider';
+import { HathorProvider } from '../../blockchain/hathor/HathorProvider';
+import { NanoContractClient } from '../../blockchain/hathor/NanoContractClient';
+import { NanoContractExtractor } from '../../blockchain/hathor/NanoContractExtractor';
+
+interface HathorConfig {
+  factorWeight?: number;
+  providerConfig?: {
+    network: string;
+    apiUrl: string;
+  };
+}
+
+interface HathorMetrics {
+  blueprintQuality: number;
+  stateConsistency: number;
+  transactionLegitimacy: number;
+  balanceLegitimacy: number;
+}
+
+interface TrustScoreWithHathor {
+  score: number;
+  confidence: number;
+  explanation: string;
+  factors: Record<string, number>;
+  hathorMetrics: HathorMetrics;
+  redFlags: string[];
+  strengths: string[];
+}
+export class HathorIntegration {
+  private provider: HathorProvider;
+  private client: NanoContractClient;
+  private extractor: NanoContractExtractor;
+  private factorWeight: number;
+
+  constructor(config: HathorConfig = {}) {
+    this.factorWeight = config.factorWeight || 0.15;
+    this.provider = new HathorProvider(config.providerConfig);
+    this.client = new NanoContractClient(this.provider);
+    this.extractor = new NanoContractExtractor(this.client);
+  }
+
+  public async calculateTrustScore(
+    nftId: string,
+    data: { tokenId: string; hathorContractId: string }
+  ): Promise<TrustScoreWithHathor> {
+    const contractData = await this.extractor.extractContractData({
+      contractId: data.hathorContractId,
+      includeTransactions: true,
+      includeBlueprint: true
+    });
+
+    const hathorMetrics = contractData.trustAnalysis;
+    const hathorScore = this.calculateHathorScore(hathorMetrics);
+
+    return {
+      score: hathorScore,
+      confidence: 0.9,
+      explanation: this.generateExplanation(hathorMetrics),
+      factors: {
+        blueprintQuality: hathorMetrics.blueprintQuality,
+        stateConsistency: hathorMetrics.stateConsistency,
+        transactionLegitimacy: hathorMetrics.transactionLegitimacy,
+        balanceLegitimacy: hathorMetrics.balanceLegitimacy
+      },
+      hathorMetrics,
+      redFlags: this.identifyRedFlags(hathorMetrics),
+      strengths: this.identifyStrengths(hathorMetrics)
+    };
+  }
+
+  public getExtractor(): NanoContractExtractor {
+    return this.extractor;
+  }
+
+  private calculateHathorScore(metrics: HathorMetrics): number {
+    const weights = {
+      blueprintQuality: 0.3,
+      stateConsistency: 0.3,
+      transactionLegitimacy: 0.2,
+      balanceLegitimacy: 0.2
+    };
+
+    return Object.entries(weights).reduce((score, [key, weight]) => {
+      return score + metrics[key as keyof HathorMetrics] * weight;
+    }, 0) * this.factorWeight;
+  }
+
+  private generateExplanation(metrics: HathorMetrics): string {
+    const strongest = Object.entries(metrics).reduce((a, b) => 
+      metrics[a as keyof HathorMetrics] > metrics[b[0] as keyof HathorMetrics] ? a : b[0]
+    );
+
+    return `This NFT shows ${metrics[strongest as keyof HathorMetrics] > 0.8 ? 'excellent' : 'good'} 
+      trust characteristics, particularly in ${strongest.replace(/([A-Z])/g, ' $1').toLowerCase()}`;
+  }
+
+  private identifyRedFlags(metrics: HathorMetrics): string[] {
+    const redFlags: string[] = [];
+    if (metrics.blueprintQuality < 0.6) {
+      redFlags.push('Low quality or unverified blueprint');
+    }
+    if (metrics.stateConsistency < 0.6) {
+      redFlags.push('Inconsistent contract state');
+    }
+    if (metrics.transactionLegitimacy < 0.6) {
+      redFlags.push('Suspicious transaction patterns');
+    }
+    if (metrics.balanceLegitimacy < 0.6) {
+      redFlags.push('Irregular token balance patterns');
+    }
+    return redFlags;
+  }
+
+  private identifyStrengths(metrics: HathorMetrics): string[] {
+    const strengths: string[] = [];
+    if (metrics.blueprintQuality > 0.8) {
+      strengths.push('High-quality verified blueprint');
+    }
+    if (metrics.stateConsistency > 0.8) {
+      strengths.push('Consistent and reliable contract state');
+    }
+    if (metrics.transactionLegitimacy > 0.8) {
+      strengths.push('Legitimate transaction history');
+    }
+    if (metrics.balanceLegitimacy > 0.8) {
+      strengths.push('Valid token balance management');
+    }
+    return strengths;
+  }
+}
+
+export function createHathorEnabledEngine(config: HathorConfig = {}) {
+  const hathorIntegration = new HathorIntegration(config);
+  const engine = new TrustScoreEngine();
+  return { engine, hathorIntegration };
+}
 import { NanoContractExtractor } from '../../blockchain/hathor/extraction/NanoContractExtractor';
 import { TrustScoreTypes } from '../types';
 import '../types/hathor'; // Import type extensions
