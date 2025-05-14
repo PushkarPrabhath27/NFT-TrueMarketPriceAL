@@ -20,6 +20,7 @@ import { creatorRoutes } from './routes/creatorRoutes';
 import { collectionRoutes } from './routes/collectionRoutes';
 import { riskRoutes } from './routes/riskRoutes';
 import { factorRoutes } from './routes/factorRoutes';
+import { contractRoutes } from './routes/contractRoutes';
 
 // Create Express application
 const app = express();
@@ -46,6 +47,7 @@ app.use('/scores/creator', cacheMiddleware(600), creatorRoutes); // 10 min cache
 app.use('/scores/collection', cacheMiddleware(600), collectionRoutes); // 10 min cache
 app.use('/risk/profile', cacheMiddleware(300), riskRoutes); // 5 min cache
 app.use('/factors', cacheMiddleware(300), factorRoutes); // 5 min cache
+app.use('/api/contract', contractRoutes); // No cache for contract operations
 
 // Apply error handling middleware last
 app.use(errorHandler);

@@ -16,6 +16,7 @@ export { BlockchainEventSource } from './event_sources/BlockchainEventSource';
 export { FraudDetectionEventSource } from './event_sources/FraudDetectionEventSource';
 export { SocialMediaEventSource } from './event_sources/SocialMediaEventSource';
 export { MarketConditionEventSource } from './event_sources/MarketConditionEventSource';
+export { HathorEventSource } from './event_sources/HathorEventSource';
 
 // Event processing
 export { EventPrioritizer } from './event_processing/EventPrioritizer';

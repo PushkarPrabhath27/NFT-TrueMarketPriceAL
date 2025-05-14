@@ -15,6 +15,7 @@ import { BlockchainEventSource } from './event_sources/BlockchainEventSource';
 import { FraudDetectionEventSource } from './event_sources/FraudDetectionEventSource';
 import { SocialMediaEventSource } from './event_sources/SocialMediaEventSource';
 import { MarketConditionEventSource } from './event_sources/MarketConditionEventSource';
+import { HathorEventSource } from './event_sources/HathorEventSource';
 import { EventPrioritizer } from './event_processing/EventPrioritizer';
 import { EventRouter } from './event_processing/EventRouter';
 import { NotificationGenerator } from './notifications/NotificationGenerator';
@@ -29,6 +30,7 @@ export interface RealTimeUpdateEngineConfig {
   fraudDetectionEventSourceConfig?: any;
   socialMediaEventSourceConfig?: any;
   marketConditionEventSourceConfig?: any;
+  hathorEventSourceConfig?: any;
   
   // Event processing configurations
   eventPrioritizerConfig?: any;
@@ -43,6 +45,7 @@ export interface RealTimeUpdateEngineConfig {
     fraudDetection: boolean;
     socialMedia: boolean;
     marketCondition: boolean;
+    hathor: boolean;
   };
   maxConcurrentUpdates: number;
   updateQueueSize: number;
@@ -60,6 +63,7 @@ export class RealTimeUpdateEngine extends EventEmitter {
   private fraudDetectionEventSource?: FraudDetectionEventSource;
   private socialMediaEventSource?: SocialMediaEventSource;
   private marketConditionEventSource?: MarketConditionEventSource;
+  private hathorEventSource?: HathorEventSource;
   
   // Event processing
   private eventPrioritizer: EventPrioritizer;
@@ -112,6 +116,7 @@ export class RealTimeUpdateEngine extends EventEmitter {
         fraudDetection: true,
         socialMedia: true,
         marketCondition: true,
+        hathor: true,
         ...config.enabledEventSources
       },
       maxConcurrentUpdates: 10,
@@ -142,6 +147,11 @@ export class RealTimeUpdateEngine extends EventEmitter {
     if (this.config.enabledEventSources.marketCondition) {
       this.marketConditionEventSource = new MarketConditionEventSource(this.config.marketConditionEventSourceConfig);
       this.setupEventSourceListeners(this.marketConditionEventSource, 'marketCondition');
+    }
+    
+    if (this.config.enabledEventSources.hathor) {
+      this.hathorEventSource = new HathorEventSource(this.config.hathorEventSourceConfig);
+      this.setupEventSourceListeners(this.hathorEventSource, 'hathor');
     }
   }
   
@@ -304,6 +314,10 @@ export class RealTimeUpdateEngine extends EventEmitter {
       this.marketConditionEventSource.start();
     }
     
+    if (this.hathorEventSource) {
+      this.hathorEventSource.start();
+    }
+    
     // Start processing the queue
     this.processUpdateQueue();
     
@@ -337,6 +351,10 @@ export class RealTimeUpdateEngine extends EventEmitter {
       this.marketConditionEventSource.stop();
     }
     
+    if (this.hathorEventSource) {
+      this.hathorEventSource.stop();
+    }
+    
     this.emit('stopped');
   }
   
@@ -352,7 +370,8 @@ export class RealTimeUpdateEngine extends EventEmitter {
         blockchain: this.blockchainEventSource?.getStatus(),
         fraudDetection: this.fraudDetectionEventSource?.getStatus(),
         socialMedia: this.socialMediaEventSource?.getStatus(),
-        marketCondition: this.marketConditionEventSource?.getStatus()
+        marketCondition: this.marketConditionEventSource?.getStatus(),
+        hathor: this.hathorEventSource?.getStatus()
       }
     };
   }
