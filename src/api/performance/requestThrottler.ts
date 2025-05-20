@@ -53,10 +53,10 @@ export class RequestThrottler extends EventEmitter {
   private constructor() {
     super();
     this.config = {
-      strategy: config.throttling.strategy || ThrottlingStrategy.TOKEN_BUCKET,
-      maxRequestsPerSecond: config.throttling.maxRequestsPerSecond || 100,
-      burstCapacity: config.throttling.burstCapacity || 50,
-      windowSizeMs: config.throttling.windowSizeMs || 1000
+      strategy: (config as any).throttling?.strategy || ThrottlingStrategy.TOKEN_BUCKET,
+      maxRequestsPerSecond: (config as any).throttling?.maxRequestsPerSecond || 100,
+      burstCapacity: (config as any).throttling?.burstCapacity || 50,
+      windowSizeMs: (config as any).throttling?.windowSizeMs || 1000
     };
     
     this.metrics = new Map();

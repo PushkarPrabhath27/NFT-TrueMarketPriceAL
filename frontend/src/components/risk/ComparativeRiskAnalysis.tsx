@@ -75,19 +75,19 @@ const ComparativeRiskAnalysis: React.FC<ComparativeRiskAnalysisProps> = ({
     }))
   };
 
-  // Chart options
+  // Chart options with explicit color values instead of theme.palette references
   const chartOptions = {
     scales: {
       r: {
         angleLines: {
           display: true,
-          color: theme.palette.divider,
+          color: '#e0e0e0', // explicit divider color
         },
         grid: {
-          color: theme.palette.divider,
+          color: '#e0e0e0', // explicit divider color
         },
         pointLabels: {
-          color: theme.palette.text.primary,
+          color: '#000000', // explicit text.primary color
           font: {
             size: 12,
             family: theme.typography.fontFamily,
@@ -98,7 +98,7 @@ const ComparativeRiskAnalysis: React.FC<ComparativeRiskAnalysisProps> = ({
         ticks: {
           stepSize: 20,
           backdropColor: 'transparent',
-          color: theme.palette.text.secondary,
+          color: '#757575', // explicit text.secondary color
         },
       },
     },
@@ -114,10 +114,10 @@ const ComparativeRiskAnalysis: React.FC<ComparativeRiskAnalysisProps> = ({
         },
       },
       tooltip: {
-        backgroundColor: theme.palette.background.paper,
-        titleColor: theme.palette.text.primary,
-        bodyColor: theme.palette.text.secondary,
-        borderColor: theme.palette.divider,
+        backgroundColor: '#ffffff', // explicit background.paper color
+        titleColor: '#000000', // explicit text.primary color
+        bodyColor: '#757575', // explicit text.secondary color
+        borderColor: '#e0e0e0', // explicit divider color
         borderWidth: 1,
         padding: 12,
         boxWidth: 10,

@@ -109,7 +109,7 @@ const RiskHistoryChart: React.FC<RiskHistoryChartProps> = ({
     ]
   };
 
-  // Chart options
+  // Chart options with explicit colors to avoid theme.palette.contrastText errors
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -121,23 +121,43 @@ const RiskHistoryChart: React.FC<RiskHistoryChartProps> = ({
         title: {
           display: true,
           text: 'Risk Score (lower is better)',
+          color: '#000000' // explicit text color
         },
         ticks: {
           callback: (value: number) => `${value}`,
+          color: '#757575' // explicit text color
         },
+        grid: {
+          color: '#e0e0e0' // explicit grid color
+        }
       },
       x: {
         title: {
           display: true,
           text: 'Date',
+          color: '#000000' // explicit text color
         },
+        ticks: {
+          color: '#757575' // explicit text color
+        },
+        grid: {
+          color: '#e0e0e0' // explicit grid color
+        }
       },
     },
     plugins: {
       legend: {
         display: false,
+        labels: {
+          color: '#000000' // explicit text color
+        }
       },
       tooltip: {
+        backgroundColor: '#ffffff', // explicit background color
+        titleColor: '#000000', // explicit title color
+        bodyColor: '#757575', // explicit body color
+        borderColor: '#e0e0e0', // explicit border color
+        borderWidth: 1,
         callbacks: {
           label: (context: any) => `Risk Score: ${context.raw}`,
         },

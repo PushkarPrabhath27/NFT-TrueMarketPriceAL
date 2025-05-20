@@ -113,14 +113,14 @@ const CollectionOverviewDashboard: React.FC = () => {
     });
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>Collection Overview Dashboard</Typography>
+    <Box sx={{ width: '100%', height: '100%', overflow: 'auto', p: 0 }}>
+      <Typography variant="h4" sx={{ mb: 3, px: 3, pt: 3 }}>Collection Overview Dashboard</Typography>
       
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ m: 0, width: '100%', px: 3, pb: 3 }}>
         {/* Trust Score Distribution */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
+          <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+            <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
               <Typography variant="h6">Trust Score Distribution</Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={mockTrustScoreDistribution}>
@@ -138,8 +138,8 @@ const CollectionOverviewDashboard: React.FC = () => {
 
         {/* Price Trend Analysis */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
+          <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+            <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
               <Typography variant="h6">Price Trend Analysis</Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={mockPriceTrends}>
@@ -160,8 +160,8 @@ const CollectionOverviewDashboard: React.FC = () => {
 
         {/* Rarity Distribution */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
+          <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+            <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
               <Typography variant="h6">Rarity Distribution</Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -188,8 +188,8 @@ const CollectionOverviewDashboard: React.FC = () => {
 
         {/* Collection-wide Risk Assessment */}
         <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
+          <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+            <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
               <Typography variant="h6">Collection-wide Risk Assessment</Typography>
               <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 2 }}>
                 <Box sx={{ textAlign: 'center' }}>
@@ -208,11 +208,11 @@ const CollectionOverviewDashboard: React.FC = () => {
               <Divider sx={{ my: 2 }} />
               <Typography variant="subtitle2">Risk Factors:</Typography>
               <Box sx={{ mt: 1 }}>
-                <Chip label="Low Liquidity" color="warning" size="small" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="Price Volatility" color="warning" size="small" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="New Creator" color="warning" size="small" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="Strong Community" color="success" size="small" sx={{ mr: 1, mb: 1 }} />
-                <Chip label="Verified Contract" color="success" size="small" sx={{ mr: 1, mb: 1 }} />
+                <Chip label="Low Liquidity" size="small" sx={{ mr: 1, mb: 1, bgcolor: '#ff9800', color: '#ffffff' }} />
+                <Chip label="Price Volatility" size="small" sx={{ mr: 1, mb: 1, bgcolor: '#ff9800', color: '#ffffff' }} />
+                <Chip label="New Creator" size="small" sx={{ mr: 1, mb: 1, bgcolor: '#ff9800', color: '#ffffff' }} />
+                <Chip label="Strong Community" size="small" sx={{ mr: 1, mb: 1, bgcolor: '#4caf50', color: '#ffffff' }} />
+                <Chip label="Verified Contract" size="small" sx={{ mr: 1, mb: 1, bgcolor: '#4caf50', color: '#ffffff' }} />
               </Box>
             </CardContent>
           </Card>
@@ -220,8 +220,8 @@ const CollectionOverviewDashboard: React.FC = () => {
 
         {/* Collection Exploration Tools */}
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
+          <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+            <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
               <Typography variant="h6">Collection Explorer</Typography>
               <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
                 <Tabs value={tabValue} onChange={handleTabChange}>
@@ -273,7 +273,7 @@ const CollectionOverviewDashboard: React.FC = () => {
                   {filteredItems.map(item => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
                       <Card variant="outlined">
-                        <CardContent>
+                        <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
                           <Typography variant="h6">{item.name}</Typography>
                           <Typography variant="body2" color="text.secondary">Rarity: {item.rarity}</Typography>
                           <Typography variant="body2" color="text.secondary">Price: {item.price} ETH</Typography>

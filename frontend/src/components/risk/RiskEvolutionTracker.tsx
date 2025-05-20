@@ -165,21 +165,43 @@ const RiskEvolutionTracker: React.FC<RiskEvolutionTrackerProps> = ({
         max: 100,
         title: {
           display: true,
-          text: 'Risk Level'
+          text: 'Risk Level',
+          color: '#000000' // explicit text color
+        },
+        ticks: {
+          color: '#757575' // explicit text color
+        },
+        grid: {
+          color: '#e0e0e0' // explicit grid color
         }
       },
       x: {
         title: {
           display: true,
-          text: 'Date'
+          text: 'Date',
+          color: '#000000' // explicit text color
+        },
+        ticks: {
+          color: '#757575' // explicit text color
+        },
+        grid: {
+          color: '#e0e0e0' // explicit grid color
         }
       }
     },
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          color: '#000000' // explicit text color
+        }
       },
       tooltip: {
+        backgroundColor: '#ffffff', // explicit background color
+        titleColor: '#000000', // explicit title color
+        bodyColor: '#757575', // explicit body color
+        borderColor: '#e0e0e0', // explicit border color
+        borderWidth: 1,
         callbacks: {
           label: function(context: any) {
             const label = context.dataset.label || '';
@@ -287,9 +309,13 @@ const RiskEvolutionTracker: React.FC<RiskEvolutionTrackerProps> = ({
                         py: 0.5, 
                         borderRadius: 1,
                         backgroundColor: 
-                          event.impact === 'positive' ? 'success.light' :
-                          event.impact === 'negative' ? 'error.light' :
-                          'grey.200'
+                          event.impact === 'positive' ? '#4caf50' : // explicit success color
+                          event.impact === 'negative' ? '#ef5350' : // explicit error color
+                          '#e0e0e0', // explicit grey color
+                        color: 
+                          event.impact === 'positive' ? '#ffffff' :
+                          event.impact === 'negative' ? '#ffffff' :
+                          '#000000'
                       }}
                     >
                       <Typography variant="caption" fontWeight="bold">

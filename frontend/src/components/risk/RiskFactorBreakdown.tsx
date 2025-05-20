@@ -9,9 +9,9 @@ import {
   AccordionDetails,
   LinearProgress,
   Tooltip,
-  Divider,
-  Chip
+  Divider
 } from '@mui/material';
+import ChipWrapper from '../common/ChipWrapper.tsx';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
@@ -31,26 +31,36 @@ interface RiskFactorBreakdownProps {
 
 const getRiskColor = (level: string) => {
   switch(level) {
-    case 'Very Low': return 'success.light';
-    case 'Low': return 'success.main';
-    case 'Medium': return 'warning.main';
-    case 'High': return 'error.light';
-    case 'Very High': return 'error.main';
-    default: return 'grey.500';
+    case 'Very Low': return { bgColor: '#4caf50', textColor: '#ffffff' }; // success.light
+    case 'Low': return { bgColor: '#2e7d32', textColor: '#ffffff' }; // success.main
+    case 'Medium': return { bgColor: '#ff9800', textColor: '#ffffff' }; // warning.main
+    case 'High': return { bgColor: '#ef5350', textColor: '#ffffff' }; // error.light
+    case 'Very High': return { bgColor: '#d32f2f', textColor: '#ffffff' }; // error.main
+    default: return { bgColor: '#757575', textColor: '#ffffff' }; // grey.500
   }
 };
 
 const getTrendIcon = (trend?: 'improving' | 'stable' | 'worsening') => {
   if (!trend) return null;
   
+  // Use explicit background and text colors instead of theme-dependent color properties
+  const getTrendColors = (trendType: string) => {
+    switch(trendType) {
+      case 'improving': return { bg: '#4caf50', text: '#ffffff' };
+      case 'stable': return { bg: '#9e9e9e', text: '#000000' };
+      case 'worsening': return { bg: '#d32f2f', text: '#ffffff' };
+      default: return { bg: '#9e9e9e', text: '#000000' };
+    }
+  };
+  
+  const colors = getTrendColors(trend);
+  
   return (
-    <Chip 
+    <ChipWrapper 
       size="small" 
       label={trend.charAt(0).toUpperCase() + trend.slice(1)}
-      color={
-        trend === 'improving' ? 'success' :
-        trend === 'stable' ? 'default' : 'error'
-      }
+      customBgColor={colors.bg}
+      customTextColor={colors.text}
       sx={{ ml: 1 }}
     />
   );
@@ -101,14 +111,11 @@ const RiskFactorBreakdown: React.FC<RiskFactorBreakdownProps> = ({ factors }) =>
                     {factor.name}
                     {getTrendIcon(factor.historicalTrend)}
                   </Typography>
-                  <Chip 
+                  <ChipWrapper 
                     label={factor.level}
                     size="small"
-                    sx={{ 
-                      bgcolor: getRiskColor(factor.level),
-                      color: 'white',
-                      fontWeight: 'bold'
-                    }}
+                    chipColor={factor.level}
+                    sx={{ fontWeight: 'bold' }}
                   />
                 </Box>
                 <Box sx={{ width: '100%', mt: 1 }}>
@@ -118,9 +125,9 @@ const RiskFactorBreakdown: React.FC<RiskFactorBreakdownProps> = ({ factors }) =>
                     sx={{ 
                       height: 8, 
                       borderRadius: 5,
-                      backgroundColor: 'grey.200',
+                      backgroundColor: '#eeeeee', // grey.200
                       '& .MuiLinearProgress-bar': {
-                        backgroundColor: getRiskColor(factor.level),
+                        backgroundColor: getRiskColor(factor.level).bgColor,
                         borderRadius: 5,
                       }
                     }}

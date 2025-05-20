@@ -17,9 +17,9 @@ export const validationMiddleware = (req: Request, res: Response, next: NextFunc
   if (!errors.isEmpty()) {
     // Format validation errors for consistent response
     const formattedErrors = errors.array().map(error => ({
-      field: error.param,
+      field: (error as any).param,
       message: error.msg,
-      value: error.value
+      value: (error as any).value
     }));
     
     // Log validation errors

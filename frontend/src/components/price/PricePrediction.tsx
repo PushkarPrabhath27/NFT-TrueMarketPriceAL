@@ -44,8 +44,8 @@ const PricePrediction: React.FC<PricePredictionProps> = ({ prediction }) => {
   const currency = 'ETH';
 
   return (
-    <Card sx={{ height: '100%' }}>
-      <CardContent>
+    <Card sx={{ height: '100%', width: '100%', m: 0 }}>
+      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
         <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
           Price Predictions
           <Tooltip title="Future price projections with confidence intervals based on historical data and market trends">
@@ -61,7 +61,7 @@ const PricePrediction: React.FC<PricePredictionProps> = ({ prediction }) => {
         </Box>
 
         {/* 1 Month Prediction */}
-        <Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+        <Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1, width: '100%' }}>
           <Typography variant="subtitle2" color="text.secondary">
             1 Month Forecast
           </Typography>
@@ -93,7 +93,7 @@ const PricePrediction: React.FC<PricePredictionProps> = ({ prediction }) => {
         </Box>
 
         {/* 3 Month Prediction */}
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1, width: '100%' }}>
           <Typography variant="subtitle2" color="text.secondary">
             3 Month Forecast
           </Typography>
@@ -125,7 +125,7 @@ const PricePrediction: React.FC<PricePredictionProps> = ({ prediction }) => {
         </Box>
 
         {/* 6 Month Prediction */}
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1, width: '100%' }}>
           <Typography variant="subtitle2" color="text.secondary">
             6 Month Forecast
           </Typography>
@@ -158,7 +158,7 @@ const PricePrediction: React.FC<PricePredictionProps> = ({ prediction }) => {
 
         <Divider sx={{ my: 2 }} />
 
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, width: '100%' }}>
           <Typography variant="body2" color="text.secondary">
             <strong>Note:</strong> These predictions are estimates based on current data and market conditions. 
             Actual prices may vary due to unforeseen market events, regulatory changes, or other factors.

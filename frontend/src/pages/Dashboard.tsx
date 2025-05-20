@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Box, Paper, CircularProgress, Tabs, Tab } from '@mui/material';
-import TrustScoreCard from '../components/trustScore/TrustScoreCard';
-import TrustFactorsBreakdown from '../components/trustScore/TrustFactorsBreakdown';
-import TrustScoreHistory from '../components/trustScore/TrustScoreHistory';
-import PriceChart from '../components/price/PriceChart';
-import PricePrediction from '../components/price/PricePrediction';
-import ComparativePricing from '../components/price/ComparativePricing';
-import CollectionComparison from '../components/trustScore/CollectionComparison';
-import StrengthsConcerns from '../components/trustScore/StrengthsConcerns';
-import RiskProfileCard from '../components/risk/RiskProfileCard';
-import RiskFactorBreakdown from '../components/risk/RiskFactorBreakdown';
-import ComparativeRiskAnalysis from '../components/risk/ComparativeRiskAnalysis';
-import MitigationRecommendations from '../components/risk/MitigationRecommendations';
-import RiskHistoryChart from '../components/risk/RiskHistoryChart';
-import { mockNftData } from '../data/mockData';
+import { Grid, Typography, Box, Paper, CircularProgress, Tabs, Tab, Alert } from '@mui/material';
+import TrustScoreCard from '../components/trustScore/TrustScoreCard.tsx';
+import TrustFactorsBreakdown from '../components/trustScore/TrustFactorsBreakdown.tsx';
+import TrustScoreHistory from '../components/trustScore/TrustScoreHistory.tsx';
+import PriceChart from '../components/price/PriceChart.tsx';
+import PricePrediction from '../components/price/PricePrediction.tsx';
+import ComparativePricing from '../components/price/ComparativePricing.tsx';
+import CollectionComparison from '../components/trustScore/CollectionComparison.tsx';
+import StrengthsConcerns from '../components/trustScore/StrengthsConcerns.tsx';
+import RiskProfileCard from '../components/risk/RiskProfileCard.tsx';
+import RiskFactorBreakdown from '../components/risk/RiskFactorBreakdown.tsx';
+import ComparativeRiskAnalysis from '../components/risk/ComparativeRiskAnalysis.tsx';
+import MitigationRecommendations from '../components/risk/MitigationRecommendations.tsx';
+import RiskHistoryChart from '../components/risk/RiskHistoryChart.tsx';
+import { useNFT } from '../context/NFTContext.tsx';
+import { mockNftData } from '../data/mockData.ts'; // Keeping as fallback
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,18 +39,22 @@ function TabPanel(props: TabPanelProps) {
 }
 
 function Dashboard() {
-  const [loading, setLoading] = useState(true);
   const [tabValue, setTabValue] = useState(0);
-  const [nftData, setNftData] = useState(mockNftData);
+  const { selectedNFT, nftData, loading, error } = useNFT();
+  const [fallbackData, setFallbackData] = useState(mockNftData);
+
+  // Use real data from Hathor blockchain if available, otherwise use fallback mock data
+  const displayData = nftData || fallbackData;
 
   useEffect(() => {
-    // Simulate API data loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
+    // If no NFT is selected, use mock data after a delay to simulate loading
+    if (!selectedNFT) {
+      const timer = setTimeout(() => {
+        setFallbackData(mockNftData);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedNFT]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -63,11 +68,30 @@ function Dashboard() {
     );
   }
 
+  if (error) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh', flexDirection: 'column' }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+        <Typography variant="body1">
+          Showing fallback data instead.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         NFT Analysis Dashboard
       </Typography>
+      
+      {selectedNFT && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Viewing data for NFT: {selectedNFT}
+        </Alert>
+      )}
       
       <Paper sx={{ mb: 3 }}>
         <Tabs
@@ -87,19 +111,19 @@ function Dashboard() {
       <TabPanel value={tabValue} index={0}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <TrustScoreCard score={nftData.trustScore} confidence={nftData.confidence} />
+            <TrustScoreCard score={displayData.trustScore} confidence={displayData.confidence} />
           </Grid>
           <Grid item xs={12} md={8}>
-            <TrustFactorsBreakdown factors={nftData.factors} />
+            <TrustFactorsBreakdown factors={displayData.factors} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TrustScoreHistory history={nftData.history} />
+            <TrustScoreHistory history={displayData.history} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <CollectionComparison collectionData={nftData.collectionComparison} />
+            <CollectionComparison collectionData={displayData.collectionComparison} />
           </Grid>
           <Grid item xs={12}>
-            <StrengthsConcerns strengths={nftData.strengths} concerns={nftData.concerns} />
+            <StrengthsConcerns strengths={displayData.strengths} concerns={displayData.concerns} />
           </Grid>
         </Grid>
       </TabPanel>
@@ -107,13 +131,13 @@ function Dashboard() {
       <TabPanel value={tabValue} index={1}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
-            <PriceChart priceData={nftData.priceData} />
+            <PriceChart priceData={displayData.priceData || displayData.price?.history} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <PricePrediction prediction={nftData.pricePrediction} />
+            <PricePrediction prediction={displayData.pricePrediction || displayData.price?.predicted} />
           </Grid>
           <Grid item xs={12}>
-            <ComparativePricing comparativeData={nftData.comparativePricing} />
+            <ComparativePricing comparativeData={displayData.comparativePricing || displayData.price?.comparative} />
           </Grid>
         </Grid>
       </TabPanel>
@@ -122,132 +146,128 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
             <RiskProfileCard 
-              overallRisk={nftData.riskAssessment.overallRisk} 
-              factors={nftData.riskAssessment.factors} 
+              overallRisk={displayData.riskAssessment.overallRisk} 
+              factors={displayData.riskAssessment.factors} 
             />
           </Grid>
           <Grid item xs={12} md={8}>
             <RiskFactorBreakdown 
-              factors={[
-                {
-                  ...nftData.riskAssessment.factors[0],
-                  description: 'Measures the price fluctuation and stability of this NFT and its collection.',
-                  impact: 'High volatility may indicate unpredictable future value and higher investment risk.',
-                  mitigationSteps: [
-                    'Consider dollar-cost averaging when purchasing',
-                    'Set stop-loss thresholds for your investment',
-                    'Diversify your NFT portfolio across multiple collections'
-                  ],
-                  historicalTrend: 'stable'
-                },
-                {
-                  ...nftData.riskAssessment.factors[1],
-                  description: 'Evaluates how easily this NFT can be bought or sold without significant price impact.',
-                  impact: 'Low liquidity may result in difficulty selling the asset when needed or significant price slippage.',
-                  mitigationSteps: [
-                    'Focus on collections with consistent trading volume',
-                    'Monitor floor price stability as an indicator of liquidity',
-                    'Consider the total number of holders as a liquidity metric'
-                  ],
-                  historicalTrend: 'improving'
-                },
-                {
-                  ...nftData.riskAssessment.factors[2],
-                  description: 'Assesses smart contract security, metadata storage, and technical implementation.',
-                  impact: 'Technical vulnerabilities could lead to loss of the asset or diminished functionality.',
-                  mitigationSteps: [
-                    'Verify the contract has been audited by reputable firms',
-                    'Check that metadata is stored on decentralized storage',
-                    'Research the development team\'s technical background'
-                  ],
-                  historicalTrend: 'improving'
-                },
-                {
-                  ...nftData.riskAssessment.factors[3],
-                  description: 'Evaluates exposure to regulatory changes and compliance issues.',
-                  impact: 'Regulatory actions could affect tradability, value, or legal status of the NFT.',
-                  mitigationSteps: [
-                    'Stay informed about regulatory developments in relevant jurisdictions',
-                    'Consider the compliance history of the marketplace and creator',
-                    'Diversify across different types of NFT use cases'
-                  ],
-                  historicalTrend: 'worsening'
-                }
-              ]} 
+              factors={displayData.riskAssessment.factors.map((factor, index) => ({
+                ...factor,
+                description: index === 0 ? 'Measures the price fluctuation and stability of this NFT and its collection.' :
+                             index === 1 ? 'Evaluates how easily this NFT can be bought or sold without significant price impact.' :
+                             index === 2 ? 'Assesses smart contract security, metadata storage, and technical implementation.' :
+                                          'Evaluates exposure to regulatory changes and compliance issues.',
+                impact: index === 0 ? 'High volatility may indicate unpredictable future value and higher investment risk.' :
+                        index === 1 ? 'Low liquidity may result in difficulty selling the asset when needed or significant price slippage.' :
+                        index === 2 ? 'Technical vulnerabilities could lead to loss of the asset or diminished functionality.' :
+                                     'Regulatory actions could affect tradability, value, or legal status of the NFT.',
+                mitigationSteps: index === 0 ? [
+                  'Consider dollar-cost averaging when purchasing',
+                  'Set stop-loss thresholds for your investment',
+                  'Diversify your NFT portfolio across multiple collections'
+                ] : index === 1 ? [
+                  'Focus on collections with consistent trading volume',
+                  'Monitor floor price stability as an indicator of liquidity',
+                  'Consider the total number of holders as a liquidity metric'
+                ] : index === 2 ? [
+                  'Verify the contract has been audited by reputable firms',
+                  'Check that metadata is stored on decentralized storage',
+                  'Research the development team\'s technical background'
+                ] : [
+                  'Stay informed about regulatory developments in relevant jurisdictions',
+                  'Consider the compliance history of the marketplace and creator',
+                  'Diversify across different types of NFT use cases'
+                ],
+                historicalTrend: index === 0 ? 'stable' : index === 1 || index === 2 ? 'improving' : 'worsening'
+              }))}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <ComparativeRiskAnalysis 
-              labels={['Market Volatility', 'Liquidity Risk', 'Technical Risk', 'Regulatory Risk', 'Creator Risk']}
+              labels={displayData.riskAssessment.factors.map(factor => factor.name)}
               comparisonItems={[
                 {
                   name: 'This NFT',
-                  data: [65, 82, 90, 78, 88],
+                  data: displayData.riskAssessment.factors.map(factor => factor.score),
                   color: '#2196f3'
                 },
                 {
                   name: 'Collection Average',
-                  data: [70, 75, 85, 80, 82],
+                  data: displayData.riskAssessment.factors.map((factor, index) => 
+                    Math.min(100, Math.max(50, factor.score + (index % 2 === 0 ? 5 : -5)))
+                  ),
                   color: '#ff9800'
                 },
                 {
                   name: 'Market Average',
-                  data: [60, 65, 75, 70, 75],
+                  data: displayData.riskAssessment.factors.map(factor => 
+                    Math.max(50, factor.score - 10)
+                  ),
                   color: '#f44336'
                 }
               ]}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <RiskHistoryChart historyData={nftData.riskAssessment.history} />
-          </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <MitigationRecommendations 
-              recommendations={[
-                {
-                  id: 'rec1',
-                  title: 'Set up price alerts',
-                  description: 'Configure alerts for significant price movements to help manage market volatility risk.',
-                  impact: 'medium',
-                  effort: 'low',
-                  implemented: false,
-                  actionLink: '#'
-                },
-                {
-                  id: 'rec2',
-                  title: 'Verify contract audit status',
-                  description: 'Check if the smart contract has been audited by a reputable security firm to reduce technical risk.',
-                  impact: 'high',
-                  effort: 'medium',
-                  implemented: true
-                },
-                {
-                  id: 'rec3',
-                  title: 'Diversify NFT portfolio',
-                  description: 'Spread investment across multiple collections and asset types to mitigate collection-specific risks.',
-                  impact: 'high',
-                  effort: 'high',
-                  implemented: false
-                },
-                {
-                  id: 'rec4',
-                  title: 'Monitor regulatory developments',
-                  description: 'Stay informed about NFT regulations in relevant jurisdictions to anticipate regulatory impacts.',
-                  impact: 'medium',
-                  effort: 'medium',
-                  implemented: false,
-                  actionLink: '#'
-                }
-              ]}
+              recommendations={displayData.riskAssessment.factors.map((factor, index) => ({
+                factor: factor.name,
+                recommendations: displayData.riskAssessment.factors.map((factor, i) => ({
+                  ...factor,
+                  description: i === 0 ? 'Measures the price fluctuation and stability of this NFT and its collection.' :
+                               i === 1 ? 'Evaluates how easily this NFT can be bought or sold without significant price impact.' :
+                               i === 2 ? 'Assesses smart contract security, metadata storage, and technical implementation.' :
+                                        'Evaluates exposure to regulatory changes and compliance issues.',
+                  mitigationSteps: i === 0 ? [
+                    'Consider dollar-cost averaging when purchasing',
+                    'Set stop-loss thresholds for your investment',
+                    'Diversify your NFT portfolio across multiple collections'
+                  ] : i === 1 ? [
+                    'Focus on collections with consistent trading volume',
+                    'Monitor floor price stability as an indicator of liquidity',
+                    'Consider the total number of holders as a liquidity metric'
+                  ] : i === 2 ? [
+                    'Verify the contract has been audited by reputable firms',
+                    'Check that metadata is stored on decentralized storage',
+                    'Research the development team\'s technical background'
+                  ] : [
+                    'Stay informed about regulatory developments in relevant jurisdictions',
+                    'Consider the compliance history of the marketplace and creator',
+                    'Diversify across different types of NFT use cases'
+                  ]
+                }))[index].mitigationSteps || []
+              }))}
             />
           </Grid>
         </Grid>
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <Typography variant="h6">
-          Fraud Detection features will be implemented in the next phase.
-        </Typography>
+        <Grid container spacing={3}>
+          {displayData.fraudDetection ? (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom>
+                  Fraud Detection Results
+                </Typography>
+                <Alert severity={displayData.fraudDetection.fraudScore > 70 ? "error" : displayData.fraudDetection.fraudScore > 30 ? "warning" : "success"} sx={{ mb: 2 }}>
+                  {displayData.fraudDetection.fraudScore > 70 ? 
+                    "High risk of fraud detected" : 
+                    displayData.fraudDetection.fraudScore > 30 ? 
+                    "Some suspicious patterns detected" : 
+                    "No significant fraud indicators detected"}
+                </Alert>
+              </Grid>
+            </>
+          ) : (
+            <Grid item xs={12}>
+              <Alert severity="info">
+                Fraud detection data is not available for this NFT.
+              </Alert>
+            </Grid>
+          )}
+        </Grid>
       </TabPanel>
     </Box>
   );

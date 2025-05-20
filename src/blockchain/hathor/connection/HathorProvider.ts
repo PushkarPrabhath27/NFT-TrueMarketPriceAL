@@ -8,6 +8,7 @@
 
 import { BlockchainProvider } from '../../connection/interfaces/BlockchainProvider';
 import { ConnectionConfig } from '../../connection/interfaces/ConnectionConfig';
+import { HathorWallet } from '@hathor/wallet-lib';
 
 /**
  * Configuration options for Hathor Network connection
@@ -25,6 +26,7 @@ export interface HathorConnectionConfig extends ConnectionConfig {
 export class HathorProvider implements BlockchainProvider {
   private config: HathorConnectionConfig;
   private isConnected: boolean = false;
+  private hathorLib: HathorWallet;
   
   /**
    * Create a new Hathor Network provider
@@ -42,12 +44,17 @@ export class HathorProvider implements BlockchainProvider {
    */
   public async connect(): Promise<boolean> {
     try {
-      // Implementation will use Hathor's API to establish connection
-      // For now, this is a placeholder for the actual implementation
-      console.log(`Connecting to Hathor ${this.config.network} at ${this.config.apiUrl}`);
+      // Initialize Hathor SDK with configuration
+      const hathorLib = new HathorWallet({
+        network: this.config.network,
+        server: this.config.apiUrl,
+        apiKey: this.config.apiKey
+      });
       
-      // TODO: Implement actual connection logic using Hathor's API
+      await hathorLib.start();
+      this.hathorLib = hathorLib;
       this.isConnected = true;
+      console.log(`Connected to Hathor ${this.config.network} at ${this.config.apiUrl}`);
       return true;
     } catch (error) {
       console.error('Failed to connect to Hathor Network:', error);
@@ -137,5 +144,132 @@ export class HathorProvider implements BlockchainProvider {
       HTR: '0',
       tokens: {}
     };
+  }
+
+  /**
+   * Search for NFTs on the Hathor blockchain
+   * @param query Search query (token ID, name, or collection)
+   * @returns Array of NFT data objects
+   */
+  public async searchNFTs(query: string): Promise<any[]> {
+    if (!this.isConnected) {
+      await this.connect();
+    }
+
+    try {
+      // Search by token ID
+      let results = [];
+      
+      // Try exact token ID match first
+      try {
+        const tokenData = await this.hathorLib.getTokenDetails(query);
+        if (tokenData && tokenData.nft) {
+          results.push({
+            tokenId: query,
+            name: tokenData.name || `NFT #${query.substring(0, 8)}`,
+            collection: tokenData.collection || 'Unknown Collection',
+            creator: tokenData.creator || 'Unknown Creator',
+            // Add other properties from token data
+          });
+        }
+      } catch (err) {
+        // Token ID not found, continue with other search methods
+      }
+      
+      // Search by name or collection (would use a more sophisticated search in production)
+      const allTokens = await this.hathorLib.getTokens();
+      const matchingTokens = allTokens.filter(token => {
+        // Check if token is an NFT
+        if (!token.nft) return false;
+        
+        // Match by name or collection
+        return (
+          token.name?.toLowerCase().includes(query.toLowerCase()) ||
+          token.collection?.toLowerCase().includes(query.toLowerCase())
+        );
+      });
+      
+      // Add matching tokens to results if not already included
+      for (const token of matchingTokens) {
+        if (!results.some(r => r.tokenId === token.id)) {
+          results.push({
+            tokenId: token.id,
+            name: token.name || `NFT #${token.id.substring(0, 8)}`,
+            collection: token.collection || 'Unknown Collection',
+            creator: token.creator || 'Unknown Creator',
+            // Add other properties from token data
+          });
+        }
+      }
+      
+      return results;
+    } catch (error) {
+      console.error('Error searching NFTs:', error);
+      throw new Error(`Failed to search NFTs: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get detailed data for a specific NFT by token ID
+   * @param tokenId The token ID of the NFT
+   * @returns Detailed NFT data object
+   */
+  public async getNFTData(tokenId: string): Promise<any> {
+    if (!this.isConnected) {
+      await this.connect();
+    }
+
+    try {
+      // Get token details
+      const tokenData = await this.hathorLib.getTokenDetails(tokenId);
+      
+      if (!tokenData || !tokenData.nft) {
+        throw new Error('Token is not an NFT or does not exist');
+      }
+      
+      // Get transaction history
+      const transactions = await this.hathorLib.getTokenTransactions(tokenId);
+      
+      // Get token metadata
+      const metadata = await this.hathorLib.getTokenMetadata(tokenId);
+      
+      // Calculate creation date from first transaction
+      const creationDate = transactions.length > 0 ? 
+        new Date(transactions[0].timestamp * 1000).toISOString() : 
+        new Date().toISOString();
+      
+      // Calculate last activity date from most recent transaction
+      const lastActivityDate = transactions.length > 0 ? 
+        new Date(transactions[transactions.length - 1].timestamp * 1000).toISOString() : 
+        creationDate;
+      
+      // Count unique addresses that interacted with this token
+      const uniqueAddresses = new Set();
+      transactions.forEach(tx => {
+        tx.inputs.forEach(input => uniqueAddresses.add(input.address));
+        tx.outputs.forEach(output => uniqueAddresses.add(output.address));
+      });
+      
+      // Compile comprehensive NFT data
+      return {
+        tokenId,
+        name: tokenData.name || `NFT #${tokenId.substring(0, 8)}`,
+        collection: tokenData.collection || 'Unknown Collection',
+        creator: tokenData.creator || 'Unknown Creator',
+        metadata,
+        transactionCount: transactions.length,
+        transactionSummary: {
+          uniqueInteractors: uniqueAddresses.size,
+        },
+        creationDate,
+        lastActivityDate,
+        // Add placeholder for price data (would be fetched from market data in production)
+        price: 75, // Placeholder price in HTR
+        // Add other relevant data
+      };
+    } catch (error) {
+      console.error('Error fetching NFT data:', error);
+      throw new Error(`Failed to fetch NFT data: ${error.message}`);
+    }
   }
 }

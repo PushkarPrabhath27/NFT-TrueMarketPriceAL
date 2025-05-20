@@ -113,8 +113,8 @@ const CollectionComparison: React.FC<CollectionComparisonProps> = ({ collectionD
   }
 
   return (
-    <Card sx={{ height: '100%' }}>
-      <CardContent>
+    <Card elevation={1} sx={{ height: '100%', width: '100%', m: 0 }}>
+      <CardContent sx={{ height: '100%', p: 2, '&:last-child': { pb: 2 } }}>
         <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
           Collection Comparison
           <Tooltip title="How this NFT's trust score compares to others in the same collection">
@@ -122,11 +122,11 @@ const CollectionComparison: React.FC<CollectionComparisonProps> = ({ collectionD
           </Tooltip>
         </Typography>
 
-        <Box sx={{ height: 300, mt: 2 }}>
+        <Box sx={{ height: 300, mt: 2, width: '100%' }}>
           <Bar data={chartData} options={chartOptions} />
         </Box>
 
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, width: '100%' }}>
           <Typography variant="body2" color="text.secondary">
             {positionAnalysis}
           </Typography>

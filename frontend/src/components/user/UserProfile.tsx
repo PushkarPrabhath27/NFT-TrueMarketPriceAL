@@ -119,7 +119,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export const UserProfile: React.FC = () => {
+const UserProfile: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
   const [userData, setUserData] = useState<UserProfileData>(mockUserData);
@@ -483,3 +483,5 @@ export const UserProfile: React.FC = () => {
     </Paper>
   );
 };
+
+export default UserProfile;

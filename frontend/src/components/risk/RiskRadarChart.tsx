@@ -77,17 +77,36 @@ const RiskRadarChart: React.FC<RiskRadarChartProps> = ({
     scales: {
       r: {
         angleLines: {
-          display: true
+          display: true,
+          color: '#e0e0e0' // explicit color instead of theme-dependent
+        },
+        grid: {
+          color: '#e0e0e0' // explicit color instead of theme-dependent
+        },
+        pointLabels: {
+          color: '#000000' // explicit text color
         },
         suggestedMin: 0,
         suggestedMax: 100,
         ticks: {
-          stepSize: 20
+          stepSize: 20,
+          backdropColor: 'transparent',
+          color: '#757575' // explicit text color
         }
       }
     },
     plugins: {
+      legend: {
+        labels: {
+          color: '#000000' // explicit text color
+        }
+      },
       tooltip: {
+        backgroundColor: '#ffffff', // explicit background color
+        titleColor: '#000000', // explicit title color
+        bodyColor: '#757575', // explicit body color
+        borderColor: '#e0e0e0', // explicit border color
+        borderWidth: 1,
         callbacks: {
           label: function(context: any) {
             const index = context.dataIndex;

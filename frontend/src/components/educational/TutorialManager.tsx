@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
-import { InteractiveTutorials } from './index';
+import { InteractiveTutorials } from './index.tsx';
 
 type TutorialType = 'platform' | 'trustScore' | 'pricePrediction' | 'riskAssessment' | 'fraudDetection';
 

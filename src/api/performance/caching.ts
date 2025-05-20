@@ -6,7 +6,12 @@
  */
 
 import NodeCache from 'node-cache';
-import { createClient } from 'redis';
+let createClient: any;
+try {
+  createClient = require('redis').createClient;
+} catch (e) {
+  createClient = undefined;
+}
 import { config } from '../config';
 import { Request, Response, NextFunction } from 'express';
 
@@ -34,18 +39,18 @@ export class CacheManager {
   private constructor() {
     // Initialize in-memory cache
     this.memoryCache = new NodeCache({
-      stdTTL: config.cache.defaultTTL,
-      checkperiod: config.cache.checkPeriod,
+      stdTTL: config.cache.defaultTTL ?? 60,
+      checkperiod: config.cache.checkPeriod ?? 120,
       useClones: false
     });
     
     // Initialize Redis client if enabled
-    if (config.cache.redis.enabled) {
+    if (config.cache.redis && config.cache.redis.enabled && createClient) {
       this.initRedisClient();
     }
     
     // Check if CDN integration is enabled
-    this.cdnIntegration = config.cache.cdn.enabled;
+    this.cdnIntegration = config.cache.cdn && config.cache.cdn.enabled ? true : false;
   }
   
   /**
@@ -64,8 +69,8 @@ export class CacheManager {
   private async initRedisClient(): Promise<void> {
     try {
       this.redisClient = createClient({
-        url: config.cache.redis.url,
-        password: config.cache.redis.password
+        url: config.cache.redis?.url,
+        password: config.cache.redis?.password
       });
       
       await this.redisClient.connect();
@@ -131,7 +136,7 @@ export class CacheManager {
    */
   public async set(key: string, data: any, ttl?: number, options?: { target?: 'memory' | 'redis' | 'all' }): Promise<void> {
     const target = options?.target || 'all';
-    const effectiveTTL = ttl || config.cache.defaultTTL;
+    const effectiveTTL = ttl || config.cache.defaultTTL || 60;
     
     // Set in memory cache
     if (target === 'memory' || target === 'all') {

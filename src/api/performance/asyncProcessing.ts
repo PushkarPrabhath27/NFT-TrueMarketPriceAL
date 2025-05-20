@@ -67,7 +67,7 @@ export class JobQueueManager extends EventEmitter {
     this.processingJobs = new Map();
     this.jobHandlers = new Map();
     this.isProcessing = false;
-    this.maxConcurrentJobs = config.async.maxConcurrentJobs || 5;
+    this.maxConcurrentJobs = (config as any).async?.maxConcurrentJobs ?? 5;
     
     // Start processing loop
     this.startProcessing();
@@ -365,7 +365,7 @@ export class JobQueueManager extends EventEmitter {
     // Set up periodic cleanup
     setInterval(() => {
       this.cleanupOldJobs();
-    }, config.async.cleanupInterval || 3600000); // Default: 1 hour
+    }, (config as any).async?.cleanupInterval ?? 3600000); // Default: 1 hour
     
     // Process initial jobs
     this.processNextJobs();
@@ -495,8 +495,8 @@ export class BatchProcessor {
   private batchInterval: number;
   
   private constructor() {
-    this.batchSize = config.async.batchSize || 100;
-    this.batchInterval = config.async.batchInterval || 1000;
+    this.batchSize = (config as any).async?.batchSize ?? 100;
+    this.batchInterval = (config as any).async?.batchInterval ?? 1000;
   }
   
   /**

@@ -71,7 +71,7 @@ export const TrustScoreBadge: React.FC<TrustScoreBadgeProps> = ({
         <Box sx={{ textAlign: 'center' }}>
           <Typography
             variant={size === 'small' ? 'h6' : 'h4'}
-            sx={{ color: theme.palette.primary.main }}
+            sx={{ color: '#1976d2' }} /* explicit primary.main color */
           >
             {score}
           </Typography>
@@ -121,10 +121,10 @@ export const RiskAssessmentSummary: React.FC<RiskAssessmentSummaryProps> = ({
 
   const getRiskColor = (level: 'low' | 'medium' | 'high') => {
     switch (level) {
-      case 'low': return theme.palette.success.main;
-      case 'medium': return theme.palette.warning.main;
-      case 'high': return theme.palette.error.main;
-      default: return theme.palette.grey[500];
+      case 'low': return '#2e7d32'; // success.main
+      case 'medium': return '#ff9800'; // warning.main
+      case 'high': return '#d32f2f'; // error.main
+      default: return '#757575'; // grey.500
     }
   };
 

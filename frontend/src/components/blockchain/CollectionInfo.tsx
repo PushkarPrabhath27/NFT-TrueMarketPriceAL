@@ -83,8 +83,8 @@ const CollectionInfo: React.FC<CollectionInfoProps> = ({
   };
 
   return (
-    <Card sx={{ maxWidth: 800, mx: 'auto', my: 2 }}>
-      <CardContent>
+    <Card sx={{ maxWidth: 800, mx: 'auto', my: 2, width: '100%' }}>
+      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" gutterBottom>
             {name}
@@ -109,7 +109,7 @@ const CollectionInfo: React.FC<CollectionInfoProps> = ({
           </Box>
         </Box>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ m: 0, width: '100%' }}>
           <Grid item xs={12} md={6}>
             <StatItem
               label="Floor Price"
@@ -146,7 +146,7 @@ const CollectionInfo: React.FC<CollectionInfoProps> = ({
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, width: '100%' }}>
           <Typography variant="h6" gutterBottom>
             Price History
           </Typography>

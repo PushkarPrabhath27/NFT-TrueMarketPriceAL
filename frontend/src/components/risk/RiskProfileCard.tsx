@@ -1,6 +1,6 @@
 import React from 'react';
-import { Paper, Typography, Box, Chip, Grid } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Paper, Typography, Box, Grid } from '@mui/material';
+import ChipWrapper from '../common/ChipWrapper.tsx';
 
 interface RiskProfileCardProps {
   overallRisk: string;
@@ -10,20 +10,6 @@ interface RiskProfileCardProps {
     score: number;
   }[];
 }
-
-const RiskLevelChip = styled(Chip)(({ theme, color }) => ({
-  fontWeight: 'bold',
-  backgroundColor: 
-    color === 'Very Low' ? theme.palette.success.light :
-    color === 'Low' ? theme.palette.success.main :
-    color === 'Medium' ? theme.palette.warning.main :
-    color === 'High' ? theme.palette.error.light :
-    theme.palette.error.main,
-  color: 
-    color === 'Very Low' || color === 'Low' ? theme.palette.success.contrastText :
-    color === 'Medium' ? theme.palette.warning.contrastText :
-    theme.palette.error.contrastText,
-}));
 
 const RiskProfileCard: React.FC<RiskProfileCardProps> = ({ overallRisk, factors }) => {
   return (
@@ -36,10 +22,11 @@ const RiskProfileCard: React.FC<RiskProfileCardProps> = ({ overallRisk, factors 
         <Typography variant="body1" sx={{ mr: 2 }}>
           Overall Risk Level:
         </Typography>
-        <RiskLevelChip 
+        <ChipWrapper 
           label={overallRisk} 
-          color={overallRisk} 
-          size="medium" 
+          chipColor={overallRisk} 
+          size="medium"
+          sx={{ fontWeight: 'bold' }} 
         />
       </Box>
 
@@ -58,10 +45,11 @@ const RiskProfileCard: React.FC<RiskProfileCardProps> = ({ overallRisk, factors 
               mb: 1 
             }}>
               <Typography variant="body2">{factor.name}</Typography>
-              <RiskLevelChip 
+              <ChipWrapper 
                 label={factor.level} 
-                color={factor.level} 
-                size="small" 
+                chipColor={factor.level} 
+                size="small"
+                sx={{ fontWeight: 'bold' }} 
               />
             </Box>
             <Box sx={{ 
@@ -76,11 +64,11 @@ const RiskProfileCard: React.FC<RiskProfileCardProps> = ({ overallRisk, factors 
                   width: `${factor.score}%`,
                   height: '100%',
                   bgcolor: 
-                    factor.level === 'Very Low' ? 'success.light' :
-                    factor.level === 'Low' ? 'success.main' :
-                    factor.level === 'Medium' ? 'warning.main' :
-                    factor.level === 'High' ? 'error.light' :
-                    'error.main',
+                    factor.level === 'Very Low' ? '#4caf50' : // success.light
+                    factor.level === 'Low' ? '#2e7d32' : // success.main
+                    factor.level === 'Medium' ? '#ff9800' : // warning.main
+                    factor.level === 'High' ? '#ef5350' : // error.light
+                    '#d32f2f', // error.main
                   borderRadius: 5,
                 }}
               />

@@ -46,7 +46,7 @@ import {
   CollectionOverviewDashboard,
   CreatorProfileInterface,
   MarketSegmentAnalysis 
-} from '../components/collection';
+} from '../components/collection/index.tsx';
 
 // Then use in your component
 <CollectionOverviewDashboard />

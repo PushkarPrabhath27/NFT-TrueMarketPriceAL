@@ -151,7 +151,7 @@ const defaultSettings: NotificationSettings = {
   alertThreshold: 10
 };
 
-export const NotificationCenter: React.FC = () => {
+const NotificationCenter: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [settings, setSettings] = useState<NotificationSettings>(defaultSettings);
@@ -165,24 +165,29 @@ export const NotificationCenter: React.FC = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
+
   
   const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setFilterAnchorEl(event.currentTarget);
   };
+
   
   const handleFilterClose = () => {
     setFilterAnchorEl(null);
   };
+
   
   const handleNotificationMenuClick = (event: React.MouseEvent<HTMLButtonElement>, notificationId: string) => {
     setNotificationMenuAnchorEl(event.currentTarget);
     setSelectedNotificationId(notificationId);
   };
+
   
   const handleNotificationMenuClose = () => {
     setNotificationMenuAnchorEl(null);
     setSelectedNotificationId(null);
   };
+
   
   const handleFilter = (filter: 'all' | 'unread' | 'urgent' | 'price' | 'risk' | 'security' | 'system') => {
     let filteredNotifications = [...mockNotifications];
@@ -211,6 +216,7 @@ export const NotificationCenter: React.FC = () => {
     setNotifications(filteredNotifications);
     handleFilterClose();
   };
+
   
   const handleMarkAsRead = (notificationId: string) => {
     const updatedNotifications = notifications.map(notification => 
@@ -219,21 +225,25 @@ export const NotificationCenter: React.FC = () => {
     setNotifications(updatedNotifications);
     handleNotificationMenuClose();
   };
+
   
   const handleMarkAllAsRead = () => {
     const updatedNotifications = notifications.map(notification => ({ ...notification, read: true }));
     setNotifications(updatedNotifications);
   };
+
   
   const handleDeleteNotification = (notificationId: string) => {
     const updatedNotifications = notifications.filter(notification => notification.id !== notificationId);
     setNotifications(updatedNotifications);
     handleNotificationMenuClose();
   };
+
   
   const handleClearAll = () => {
     setNotifications([]);
   };
+
   
   const handleSettingChange = (setting: keyof NotificationSettings, value: boolean | number) => {
     setSettings(prev => ({
@@ -241,6 +251,7 @@ export const NotificationCenter: React.FC = () => {
       [setting]: value
     }));
   };
+
   
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -258,6 +269,7 @@ export const NotificationCenter: React.FC = () => {
       return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
     }
   };
+
   
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -273,6 +285,7 @@ export const NotificationCenter: React.FC = () => {
         return <NotificationsIcon />;
     }
   };
+
   
   return (
     <Paper elevation={3} sx={{ p: 0, borderRadius: 2, overflow: 'hidden' }}>
@@ -376,7 +389,7 @@ export const NotificationCenter: React.FC = () => {
                             label="Urgent" 
                             size="small" 
                             color="error" 
-                            sx={{ ml: 1, height: 20 }} 
+                            sx={{ ml: 1, height: 20, color: '#ffffff' }} 
                           />
                         )}
                       </Box>

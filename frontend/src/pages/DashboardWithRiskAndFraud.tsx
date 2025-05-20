@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Paper, CircularProgress, Tabs, Tab, Fab, Tooltip } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
-import TrustScoreCard from '../components/trustScore/TrustScoreCard';
-import TrustFactorsBreakdown from '../components/trustScore/TrustFactorsBreakdown';
-import TrustScoreHistory from '../components/trustScore/TrustScoreHistory';
-import PriceChart from '../components/price/PriceChart';
-import PricePrediction from '../components/price/PricePrediction';
-import ComparativePricing from '../components/price/ComparativePricing';
-import CollectionComparison from '../components/trustScore/CollectionComparison';
-import StrengthsConcerns from '../components/trustScore/StrengthsConcerns';
-import RiskProfileCard from '../components/risk/RiskProfileCard';
-import RiskFactorBreakdown from '../components/risk/RiskFactorBreakdown';
-import ComparativeRiskAnalysis from '../components/risk/ComparativeRiskAnalysis';
-import MitigationRecommendations from '../components/risk/MitigationRecommendations';
-import RiskHistoryChart from '../components/risk/RiskHistoryChart';
+import TrustScoreCard from '../components/trustScore/TrustScoreCard.tsx';
+import TrustFactorsBreakdown from '../components/trustScore/TrustFactorsBreakdown.tsx';
+import TrustScoreHistory from '../components/trustScore/TrustScoreHistory.tsx';
+import PriceChart from '../components/price/PriceChart.tsx';
+import PricePrediction from '../components/price/PricePrediction.tsx';
+import ComparativePricing from '../components/price/ComparativePricing.tsx';
+import CollectionComparison from '../components/trustScore/CollectionComparison.tsx';
+import StrengthsConcerns from '../components/trustScore/StrengthsConcerns.tsx';
+import RiskProfileCard from '../components/risk/RiskProfileCard.tsx';
+import RiskFactorBreakdown from '../components/risk/RiskFactorBreakdown.tsx';
+import ComparativeRiskAnalysis from '../components/risk/ComparativeRiskAnalysis.tsx';
+import MitigationRecommendations from '../components/risk/MitigationRecommendations.tsx';
+import RiskHistoryChart from '../components/risk/RiskHistoryChart.tsx';
 // Import new components
-import RiskRadarChart from '../components/risk/RiskRadarChart';
-import RiskEvolutionTracker from '../components/risk/RiskEvolutionTracker';
-import FraudDetectionResults from '../components/fraud/FraudDetectionResults';
+import RiskRadarChart from '../components/risk/RiskRadarChart.tsx';
+import RiskEvolutionTracker from '../components/risk/RiskEvolutionTracker.tsx';
+import FraudDetectionResults from '../components/fraud/FraudDetectionResults.tsx';
 // Import educational components
-import { EducationalOverlay } from '../components/educational';
-import { MethodologyExplanation } from '../components/educational';
+import { EducationalOverlay } from '../components/educational/index.tsx';
+import { MethodologyExplanation } from '../components/educational/index.tsx';
 
 // Import mock data
-import { mockNftData } from '../data/mockData';
-import { mockRiskDimensions, mockRiskHistoricalData, mockFraudIndicators } from '../data/mockRiskAndFraudData';
+import { mockNftData } from '../data/mockData.ts';
+import { mockRiskDimensions, mockRiskHistoricalData, mockFraudIndicators } from '../data/mockRiskAndFraudData.ts';
 
 interface TabPanelProps {
   children?: React.ReactNode;

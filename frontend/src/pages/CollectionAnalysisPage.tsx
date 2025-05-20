@@ -19,7 +19,7 @@ import {
   CollectionOverviewDashboard,
   CreatorProfileInterface,
   MarketSegmentAnalysis
-} from '../components/collection';
+} from '../components/collection/index.tsx';
 
 const CollectionAnalysisPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -29,8 +29,8 @@ const CollectionAnalysisPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ my: 4 }}>
+    <Container maxWidth="xl" sx={{ p: 0 }}>
+      <Box sx={{ p: 3, width: '100%' }}>
         {/* Breadcrumbs navigation */}
         <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
           <Link
@@ -59,7 +59,7 @@ const CollectionAnalysisPage: React.FC = () => {
         </Typography>
 
         {/* Navigation tabs */}
-        <Paper sx={{ mb: 4 }}>
+        <Paper sx={{ mb: 3, width: '100%' }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
@@ -75,9 +75,11 @@ const CollectionAnalysisPage: React.FC = () => {
         </Paper>
 
         {/* Tab content */}
-        {activeTab === 0 && <CollectionOverviewDashboard />}
-        {activeTab === 1 && <CreatorProfileInterface />}
-        {activeTab === 2 && <MarketSegmentAnalysis />}
+        <Box sx={{ width: '100%', mt: 0 }}>
+          {activeTab === 0 && <CollectionOverviewDashboard />}
+          {activeTab === 1 && <CreatorProfileInterface />}
+          {activeTab === 2 && <MarketSegmentAnalysis />}
+        </Box>
       </Box>
     </Container>
   );
